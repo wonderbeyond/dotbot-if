@@ -28,7 +28,7 @@ class If(dotbot.Plugin):
         if not isinstance(cond, str):
             raise ValueError('"cond" parameter must be a string')
 
-        ret = subprocess.run(cond, shell=True)
+        ret = subprocess.run(['bash', '-c', cond])
         is_met = ret.returncode == 0
 
         if (is_met and 'met' not in data) or (not is_met and 'unmet' not in data):

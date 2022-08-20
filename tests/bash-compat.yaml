@@ -1,0 +1,13 @@
+- if:
+  - cond: '[[ -d / ]]'
+    met:
+    - shell:
+      - echo "Yes, bash '[[ ... ]]'' is supported."
+  - cond: '(( 1+1==2 ))'
+    met:
+    - shell:
+      - echo "Yes, 1+1 = 2"
+  - cond: '(( 1+1==3 ))'
+    unmet:
+    - shell:
+      - echo "No, 1+1 != 3"
