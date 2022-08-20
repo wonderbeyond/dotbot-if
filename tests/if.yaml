@@ -1,0 +1,37 @@
+- if:
+    cond: '[ -d / ]'
+    met:
+    - shell:
+      - touch ~/if-test-01-footprint-met
+    unmet:
+    - shell:
+      - touch ~/if-test-01-footprint-unmet
+
+- if:
+    cond: '[ -f /file-that-does-not-exist ]'
+    met:
+    - shell:
+      - touch ~/if-test-02-footprint-met
+    unmet:
+    - shell:
+      - touch ~/if-test-02-footprint-unmet
+
+- if:
+  - cond: '[ a = a ]'
+    met:
+    - shell:
+      - touch ~/if-test-03.01-footprint-met
+    unmet:
+    - shell:
+      - touch ~/if-test-03.01-footprint-unmet
+  - cond: '[ a = b ]'
+    met:
+    - shell:
+      - touch ~/if-test-03.02-footprint-met
+    unmet:
+    - shell:
+      - touch ~/if-test-03.02-footprint-unmet
+
+- if:
+    cond: '[ -d / ]'
+    # missing met and unmet parameters, for asserting no crash.

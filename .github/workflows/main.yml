@@ -1,0 +1,42 @@
+name: "Testing"
+
+on: [push, pull_request]
+
+env:
+  DOTBOT_CMD_BASE: >
+    ./dotbot/bin/dotbot -xvv -d ./dotbot-if/tests -p ./dotbot-if/if.py
+
+jobs:
+  testing:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11-dev"]
+    steps:
+      - name: Checkout dotbot-if
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          path: ./dotbot-if
+      - name: Checkout dotbot
+        uses: actions/checkout@v2
+        with:
+          repository: 'anishathalye/dotbot'
+          submodules: recursive
+          path: ./dotbot
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: "Run dotbot"
+        run: $DOTBOT_CMD_BASE -c ./dotbot-if/tests/if.yaml
+      - name: "Check results"
+        run: |
+          set -eux
+          test -f ${HOME}/if-test-01-footprint-met
+          test -f ${HOME}/if-test-02-footprint-unmet
+          test -f ${HOME}/if-test-03.01-footprint-met
+          test -f ${HOME}/if-test-03.02-footprint-unmet
+        shell: bash

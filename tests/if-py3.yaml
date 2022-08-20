@@ -1,0 +1,8 @@
+- if:
+    cond: 'python -V | grep -Eq "Python\s+3\."'
+    met:
+    - shell:
+      - echo Found Python 3.
+    unmet:
+    - shell:
+      - echo Python3 not found!
