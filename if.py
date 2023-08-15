@@ -1,7 +1,11 @@
+import glob
+import os
 import subprocess
 
 import dotbot
 from dotbot.dispatcher import Dispatcher
+from dotbot.util import module
+from dotbot.plugins import Clean, Create, Link, Shell
 
 
 class If(dotbot.Plugin):
@@ -19,7 +23,6 @@ class If(dotbot.Plugin):
 
         return self._handle_single_if(data)
 
-
     def _handle_single_if(self, data):
         cond = data.get('cond')
 
@@ -36,6 +39,18 @@ class If(dotbot.Plugin):
 
         return self._run_internal(data['met'] if is_met else data['unmet'])
 
+    def _load_plugins(self):
+        plugin_paths = self._context.options().plugins
+        plugins = []
+        for dir in self._context.options().plugin_dirs:
+            for path in glob.glob(os.path.join(dir, '*.py')):
+                plugin_paths.append(path)
+        for path in plugin_paths:
+            abspath = os.path.abspath(path)
+            plugins.extend(module.load(abspath))
+        if not self._context.options().disable_built_in_plugins:
+            plugins.extend([Clean, Create, Link, Shell])
+        return plugins
 
     def _run_internal(self, data):
         dispatcher = Dispatcher(
@@ -43,5 +58,6 @@ class If(dotbot.Plugin):
             only=self._context.options().only,
             skip=self._context.options().skip,
             options=self._context.options(),
+            plugins=self._load_plugins(),
         )
         return dispatcher.dispatch(data)
