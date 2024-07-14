@@ -5,7 +5,6 @@ import subprocess
 import dotbot
 from dotbot.dispatcher import Dispatcher
 from dotbot.util import module
-from dotbot.plugins import Clean, Create, Link, Shell
 
 
 class If(dotbot.Plugin):
@@ -49,6 +48,7 @@ class If(dotbot.Plugin):
             abspath = os.path.abspath(path)
             plugins.extend(module.load(abspath))
         if not self._context.options().disable_built_in_plugins:
+            from dotbot.plugins import Clean, Create, Link, Shell
             plugins.extend([Clean, Create, Link, Shell])
         return plugins
 
